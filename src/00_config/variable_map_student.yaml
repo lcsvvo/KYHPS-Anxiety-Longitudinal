@@ -1,0 +1,187 @@
+# src/00_config/variable_map_student.yaml
+# ─────────────────────────────────────────
+# KYHPS 학생 데이터 연도별 변수명 → 표준 변수명 매핑 테이블
+#
+# 사용법:
+#   - left (원본): 각 연도 원본 CSV의 실제 컬럼명
+#   - right (표준): 통합 분석에서 사용할 표준 변수명
+#
+# 업데이트 원칙:
+#   - 새 연도 데이터 추가 시 해당 연도 섹션만 추가
+#   - 표준 변수명(standard)은 절대 변경 금지
+#   - 원본 컬럼명은 코드북(docs/codebooks/) 참조
+
+meta:
+  panel: KYHPS
+  subject: student
+  years: [2019, 2020, 2021, 2022, 2023]
+  last_updated: "2026-05-18"
+  maintainer: "연구팀"
+
+# ── ID 변수 ────────────────────────────────────────────────────────────
+id:
+  standard: "pid"
+  description: "패널 개인 식별자 (연도 간 동일)"
+  by_year:
+    2019: "ID"      # 실제 원본 컬럼명으로 수정 필요
+    2020: "ID"
+    2021: "ID"
+    2022: "ID"
+    2023: "ID"
+
+# ── 인구사회학적 변수 ──────────────────────────────────────────────────
+demographics:
+  - standard: "sex"
+    description: "성별 (1=남, 2=여 → 0=여, 1=남으로 재코딩)"
+    type: "binary"
+    by_year:
+      2019: "sex"   # 실제 원본 컬럼명으로 수정 필요
+      2020: "sex"
+      2021: "sex"
+      2022: "sex"
+      2023: "sex"
+
+  - standard: "age"
+    description: "현재 나이 (만 나이)"
+    type: "continuous"
+    by_year:
+      2019: "age"
+      2020: "age"
+      2021: "age"
+      2022: "age"
+      2023: "age"
+
+  - standard: "grade"
+    description: "학년 (1~12)"
+    type: "ordinal"
+    by_year:
+      2019: "grade"
+      2020: "grade"
+      2021: "grade"
+      2022: "grade"
+      2023: "grade"
+
+  - standard: "region"
+    description: "거주 지역 (시도 코드)"
+    type: "categorical"
+    by_year:
+      2019: "region"
+      2020: "region"
+      2021: "region"
+      2022: "region"
+      2023: "region"
+
+# ── 흡연 관련 변수 ─────────────────────────────────────────────────────
+smoking:
+  - standard: "smk_current"
+    description: "현재 흡연 여부 (0=비흡연, 1=흡연)"
+    type: "binary"
+    logic_rules: ["RULE_SMK_001", "RULE_SMK_002"]
+    by_year:
+      2019: null    # 실제 원본 컬럼명으로 수정 필요
+      2020: null
+      2021: null
+      2022: null
+      2023: null
+
+  - standard: "smk_start_age"
+    description: "흡연 시작 연령"
+    type: "continuous"
+    logic_rules: ["RULE_SMK_001", "RULE_SMK_003"]
+    by_year:
+      2019: null
+      2020: null
+      2021: null
+      2022: null
+      2023: null
+
+  - standard: "smk_freq"
+    description: "흡연 빈도 (일/월/없음)"
+    type: "ordinal"
+    by_year:
+      2019: null
+      2020: null
+      2021: null
+      2022: null
+      2023: null
+
+# ── 음주 관련 변수 ─────────────────────────────────────────────────────
+alcohol:
+  - standard: "alc_current"
+    description: "현재 음주 여부 (0=비음주, 1=음주)"
+    type: "binary"
+    by_year:
+      2019: null
+      2020: null
+      2021: null
+      2022: null
+      2023: null
+
+  - standard: "alc_freq"
+    description: "음주 빈도"
+    type: "ordinal"
+    by_year:
+      2019: null
+      2020: null
+      2021: null
+      2022: null
+      2023: null
+
+# ── 신체활동 변수 ──────────────────────────────────────────────────────
+physical_activity:
+  - standard: "pa_days_week"
+    description: "주당 신체활동 일수"
+    type: "continuous"
+    by_year:
+      2019: null
+      2020: null
+      2021: null
+      2022: null
+      2023: null
+
+# ── 심리/정신건강 변수 ─────────────────────────────────────────────────
+mental_health:
+  - standard: "stress_level"
+    description: "스트레스 인지 수준"
+    type: "ordinal"
+    by_year:
+      2019: null
+      2020: null
+      2021: null
+      2022: null
+      2023: null
+
+  - standard: "depression_screen"
+    description: "우울 선별 점수"
+    type: "continuous"
+    by_year:
+      2019: null
+      2020: null
+      2021: null
+      2022: null
+      2023: null
+
+# ── 가중치 변수 ────────────────────────────────────────────────────────
+weights:
+  - standard: "w_cross"
+    description: "연도별 횡단 가중치"
+    by_year:
+      2019: null    # 실제 가중치 변수명 확인 후 입력
+      2020: null
+      2021: null
+      2022: null
+      2023: null
+
+  - standard: "w_panel_5yr"
+    description: "5개년 패널 가중치 (완전응답자용)"
+    by_year:
+      2019: null    # 코드북 표본설계 2부 참조
+      2020: null
+      2021: null
+      2022: null
+      2023: null
+
+# ── 복합표본설계 변수 ──────────────────────────────────────────────────
+survey_design:
+  strata_col:  null   # 층화 변수명 (시도×학교급)
+  cluster_col: null   # 군집 변수명 (학교 ID)

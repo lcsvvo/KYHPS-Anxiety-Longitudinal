@@ -1,0 +1,30 @@
+# KYHPS 청소년건강패널조사 분석 환경
+# Python >= 3.10 권장 (type hint 문법 사용)
+#
+# 설치 방법:
+#   pip install -r requirements.txt
+#
+# 가상환경 생성 권장:
+#   python -m venv .venv
+#   .venv\Scripts\activate         (Windows)
+#   source .venv/bin/activate      (Mac/Linux)
+#   pip install -r requirements.txt
+
+# ── 핵심 데이터 처리 ─────────────────────────────────────────────
+numpy>=1.24.0
+pandas>=2.0.0
+openpyxl>=3.1.0          # xlsx 읽기·쓰기 (pandas 백엔드)
+
+# ── 통계 분석 ────────────────────────────────────────────────────
+scipy>=1.11.0
+statsmodels>=0.14.0       # OLS, 클러스터 SE
+
+# ── 패널 데이터 분석 (Fixed Effects) ─────────────────────────────
+linearmodels>=4.30        # PanelOLS, RandomEffects, BetweenOLS
+
+# ── 시각화 ──────────────────────────────────────────────────────
+matplotlib>=3.7.0
+seaborn>=0.12.0           # 히트맵, 고급 시각화용
+
+# ── 설정 파일 파싱 ───────────────────────────────────────────────
+pyyaml>=6.0.0             # config/variable_map.yaml 로드용

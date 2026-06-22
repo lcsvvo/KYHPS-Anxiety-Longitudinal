@@ -1,0 +1,93 @@
+# src/00_config/variable_map_parent.yaml
+# ─────────────────────────────────────────
+# KYHPS 보호자 데이터 연도별 변수명 → 표준 변수명 매핑 테이블
+
+meta:
+  panel: KYHPS
+  subject: parent
+  years: [2019, 2020, 2021, 2022, 2023]
+  last_updated: "2026-05-18"
+  note: "보호자 변수는 학생 데이터와 pid로 연결. 분석 시 _par 접미사 자동 부착."
+
+id:
+  standard: "pid"
+  description: "패널 개인 식별자 (학생 pid와 동일)"
+  by_year:
+    2019: "ID"
+    2020: "ID"
+    2021: "ID"
+    2022: "ID"
+    2023: "ID"
+
+socioeconomic:
+  - standard: "income_level"
+    description: "월 가구소득 구간 (1~10분위)"
+    type: "ordinal"
+    by_year:
+      2019: null
+      2020: null
+      2021: null
+      2022: null
+      2023: null
+
+  - standard: "edu_level_mother"
+    description: "어머니 최종학력"
+    type: "ordinal"
+    by_year:
+      2019: null
+      2020: null
+      2021: null
+      2022: null
+      2023: null
+
+  - standard: "edu_level_father"
+    description: "아버지 최종학력"
+    type: "ordinal"
+    by_year:
+      2019: null
+      2020: null
+      2021: null
+      2022: null
+      2023: null
+
+  - standard: "occupation_father"
+    description: "아버지 직업 분류"
+    type: "categorical"
+    by_year:
+      2019: null
+      2020: null
+      2021: null
+      2022: null
+      2023: null
+
+family:
+  - standard: "family_type"
+    description: "가족 형태 (양부모/한부모/조손 등)"
+    type: "categorical"
+    by_year:
+      2019: null
+      2020: null
+      2021: null
+      2022: null
+      2023: null
+
+  - standard: "n_siblings"
+    description: "형제자매 수"
+    type: "continuous"
+    by_year:
+      2019: null
+      2020: null
+      2021: null
+      2022: null
+      2023: null
+
+parent_health:
+  - standard: "par_smk_current"
+    description: "부모 흡연 여부"
+    type: "binary"
+    by_year:
+      2019: null
+      2020: null
+      2021: null
+      2022: null
+      2023: null
