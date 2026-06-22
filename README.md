@@ -1,293 +1,280 @@
-# KYHPS Longitudinal Mental Health Project - A Mundlak (Within–Between) Decomposition of Adolescent Anxiety
-### A Mundlak (Within–Between) Decomposition of the Korean Youth Health Panel Survey, 2019–2023
+# Between-Person Risk vs. Within-Person Change in Adolescent Anxiety
+### 청소년 스마트폰 이용과 불안: KYHPS 5개년 패널의 개인 간·개인 내 효과 분리 (Mundlak Decomposition)
 
-![Status](https://img.shields.io/badge/status-research%20complete-success)
 ![Data](https://img.shields.io/badge/data-KYHPS%202019--2023-blue)
 ![Design](https://img.shields.io/badge/design-5--wave%20panel-blueviolet)
-![N](https://img.shields.io/badge/analytic%20N-3%2C986-informational)
+![N](https://img.shields.io/badge/N-3%2C986-informational)
 ![Method](https://img.shields.io/badge/method-Mundlak%20within--between-orange)
 ![Python](https://img.shields.io/badge/python-3.11-3776AB?logo=python&logoColor=white)
-![License](https://img.shields.io/badge/code-MIT-lightgrey)
 
-> **One line.** Using five years of repeated measures on the same 3,986 adolescents, this project separates *who is anxious* (between-person differences) from *when the same adolescent becomes anxious* (within-person change). Smartphone use is associated with anxiety **only between persons**; **sleep and stress** carry the within-person signal.
+<p align="center">
+  <img src="figures/Figure1_within_between.png" width="720" alt="Mundlak within-between decomposition of GAD-7 anxiety"><br>
+  <sub><b>Figure 1.</b> GAD-7 불안의 개인 간(between ■)·개인 내(within ●) 분해. 스마트폰은 <b>between만 유의</b>, 수면·스트레스는 양쪽 유의.</sub>
+</p>
 
-> 🔒 **Data not included.** Raw and processed KYHPS microdata are restricted and are **not** redistributed in this repository. This repo holds code, documentation, figures, and result tables only. See [`data/README.md`](data/README.md).
-
----
-
-## Contents
-[Overview](#project-overview) · [Research Question](#research-question) · [Dataset](#dataset) · [Variables](#variables) · [Methodology](#methodology) · [Statistical Models](#statistical-models) · [Key Findings](#key-findings) · [Main Results](#main-results) · [Figures](#figures) · [Robustness](#robustness-checks) · [My Contributions](#my-contributions) · [Limitations](#limitations) · [Future Work](#future-work) · [Repository Structure](#repository-structure) · [Reproducibility](#reproducibility) · [References](#references)
+> 🔒 **데이터 미포함.** KYHPS 원자료·가공자료는 승인 기반 제한자료로 **재배포가 금지**되어 이 저장소에는 포함하지 않습니다. 코드·문서·그림·결과표만 공개합니다. → [`data/README.md`](data/README.md)
 
 ---
 
-## Project Overview
+## 🎯 30초 요약 (TL;DR)
 
-Public-health surveillance of adolescent mental health is largely **cross-sectional**: it measures different students each year and cannot tell whether *the same* student's anxiety worsens or recovers over time. This project re-analyzes the **Korean Youth Health Panel Survey (KYHPS)**, which follows the *same* adolescents across five annual waves (W1–W5, 2019–2023), to ask a question cross-sectional data cannot answer:
+**질문 (Research Question).** 청소년에서 흔히 보고되는 "스마트폰–불안" 연관은
+*누가 더 불안한가(**between-person**)* 의 문제인가, *같은 학생이 더 많이 쓰는 시기에 더 불안해지는가(**within-person**)* 의 문제인가?
+단면조사로는 구분되지 않는 이 둘을, 같은 청소년 **3,986명**을 5년간 추적한 패널자료로 분리했다.
 
-> Is the smartphone–anxiety association a **between-person** fact ("heavier users are more anxious students") or a **within-person** fact ("the same student becomes more anxious in heavier-use periods")?
+**핵심 발견 (Key Findings).**
+- 📱 **스마트폰**은 anxiety의 **개인 간(between) 연관에만 유의** (β = +0.113, *p* = .002) — 개인 내(within)는 유의하지 않음 (β = +0.023, *p* = .454).
+- 😴 **수면·스트레스**가 개인 내(within) 변화 신호를 담당 (within이 가장 큰 영역: 가족 스트레스 β = +0.607).
+- 🔁 W1 우울자 692명 중 **476명(68.8%)이 회복** — 회복은 예외가 아니라 주요 경로.
 
-The core analysis is a **Mundlak within–between decomposition** with person-clustered robust standard errors. Three supporting analyses — baseline group comparison, depression-trajectory classification, and sex-stratified description — test whether the decomposition's conclusion reproduces from different angles. Conducted for the **1st KYHPS Data Analysis Competition**; presented here as a research portfolio emphasizing longitudinal reasoning, transparent methodology, and reproducibility.
+**내 역할 (My Role).** 5인 팀의 **제1저자·발표자**. 데이터 파이프라인 구축, Mundlak 모형(개인 군집강건 SE) 직접 구현, 표본외 검증, Figure·원고 작성을 **단독 담당**.
 
----
+**방법 (Method).** KYHPS 2019–2023 (W1–W5) · **Mundlak within–between decomposition** + person cluster-robust SE · 30% held-out 표본외 검증 · Python 3.11.
 
-## Research Question
-
-**Primary** — Does the cross-sectional smartphone–anxiety association hold *within persons* once between- and within-person variation are estimated in the same model?
-
-**Secondary**
-- Which baseline (W1) indicators distinguish adolescents who *newly develop* depression (Onset) from those who stay non-depressed (Stable)?
-- During the change period (W3→W5), which variables move *together with* anxiety in the worsening (Onset) and recovering (Recovery) groups?
-- How is trajectory risk distributed by sex?
+<sub>📖 목차: [질문](#연구-질문-research-question) · [데이터·변수](#데이터--변수-dataset--variables) · [방법론](#방법론-methodology) · [결과](#주요-결과-key-results) · [그림](#그림-figures) · [내 기여](#내-기여-my-contributions) · [강건성·한계·재현](#-강건성-robustness-checks) · [구조](#저장소-구조-repository-structure)</sub>
 
 ---
 
-## Dataset
+## 연구 질문 (Research Question)
 
-| Item | Detail |
+청소년 정신건강 감시체계(예: 청소년건강행태조사)는 대부분 **단면조사**여서, 매년 *다른* 학생을 측정한다. 따라서 *같은* 학생의 불안이 악화·회복되는 과정을 포착하지 못한다. 이 프로젝트는 *같은* 청소년을 5년간 추적한 **KYHPS** 패널로, 단면조사가 답할 수 없는 질문을 던진다.
+
+> **개인 간(between)** — "스마트폰을 많이 쓰는 학생이 더 불안한 학생인가?"
+> **개인 내(within)** — "같은 학생이 더 많이 쓰는 *시기*에 더 불안해지는가?"
+
+이 둘은 **다른 정책**을 함의한다(위험군 *선별* vs. 악화 *추적*). 패널자료는 한 모형에서 둘을 동시에 추정할 수 있다.
+
+**보조 질문**
+- 새로 우울이 생긴(Onset) 청소년을 W1 시점에 미리 가른 baseline 지표는?
+- 변화 구간(W3→W5)에서 불안과 *함께 움직인* 변수는?
+- 궤적 위험은 성별로 어떻게 분포하는가?
+
+---
+
+## 데이터 & 변수 (Dataset & Variables)
+
+| 항목 | 내용 |
 |---|---|
-| Source | Korean Youth Health Panel Survey (KYHPS) |
-| Waves | W1–W5, annual, **2019–2023** |
-| Design | Prospective panel — same individuals repeatedly measured |
-| Analytic sample | **3,986** adolescents responding in **all five** waves (complete-case panel) |
-| Sex | 2,099 male / 1,887 female |
-| Unit | person × wave (long) for panel models; person (wide) for trajectory grouping |
+| 자료원 | Korean Youth Health Panel Survey (KYHPS) |
+| 차수 | W1–W5, 연 1회, **2019–2023** |
+| 설계 | 같은 개인을 반복측정하는 전향적 패널 |
+| 분석표본 | **5개 차수 모두 응답한 3,986명** (complete-case) |
+| 성별 | 남 2,099 / 여 1,887 |
+| 분석단위 | 패널모형 = person × wave (long) / 궤적분류 = person (wide) |
 
-**Availability.** KYHPS microdata are restricted; this repo redistributes none of it. Scripts assume the analyst has independently obtained the data and placed it under `data/raw/`. The full processing pipeline (`src/`) is included so the workflow is auditable. Because the sample is restricted to five-wave complete responders, **panel attrition is a known source of selection bias** treated explicitly as a limitation.
-
----
-
-## Variables
-
-| Variable | Coding | Waves | Notes |
+| 변수 | 코딩 | 차수 | 비고 |
 |---|---|---|---|
-| **GAD-7 anxiety** (primary outcome) | 0–21 continuous; ≥10 = moderate+ | **W3–W5** | standardized to canonical 0–21 |
-| **Depression** (single item) | 1 = none, 2 = experienced | W1–W5 | self-report; defines trajectory groups |
-| **Weekday sleep** | 1–8 ordinal | W1–W5 | W1 continuous → binned to match W2+ |
-| **Weekday smartphone use** | 1–9 ordinal | W1–W5 | W1 continuous → binned to match W2+ |
-| **Stress** (5 domains) | reverse-coded, higher = more stress | W1–W5 | academic, future, friend, appearance, family |
-| Sex; survey wave (year) | M / F; W1–W5 | — | covariates in the Mundlak model; sex also used as stratifier |
+| **GAD-7 불안** (주 결과) | 0–21 연속, ≥10 = 중등도↑ | **W3–W5** | 표준 0–21로 교정 |
+| **우울** (단일문항) | 1=없음, 2=있음 | W1–W5 | 자기보고, 궤적분류 기준 |
+| **주중 수면** | 1–8 순서형 | W1–W5 | W1 연속 → W2+ 척도로 구간매핑 |
+| **주중 스마트폰 이용** | 1–9 순서형 | W1–W5 | W1 연속 → W2+ 척도로 구간매핑 |
+| **스트레스** (5영역) | 역코딩(값↑=스트레스↑) | W1–W5 | 학업·미래·친구·외모·가족 |
+| 성별 · 조사차수(연도) | — | W1–W5 | Mundlak 모형 공변량 (성별은 층화에도 사용) |
 
-> **Measurement caveat carried throughout:** smartphone/sleep scales differ between W1 (continuous) and W2+ (ordinal); W1 was interval-mapped onto the ordinal scale. The GAD-7 window is **only three waves (W3–W5)**, which deliberately constrains interpretation of the within-person anxiety results.
+> ⚠️ **측정 주의(전체에 적용):** 스마트폰·수면 척도가 W1(연속)과 W2+(순서형)에서 달라 W1을 구간매핑했다. GAD-7은 **W3–W5 세 시점뿐**이며, 이는 within(개인 내) 불안 결과의 해석 범위를 의도적으로 제한한다.
 
 ---
 
-## Methodology
+## 방법론 (Methodology)
 
 ```mermaid
 flowchart TD
-    A[Raw KYHPS W1-W5<br/>student + parent] --> B[Harmonize names<br/>across waves]
-    B --> C[Merge wide + long<br/>complete-case N=3,986]
-    C --> D[Construct variables<br/>GAD-7 0-21, reverse-coded stress,<br/>W1 continuous to ordinal binning]
-    D --> E1[Core: Mundlak within-between<br/>+ cluster-robust SE]
-    D --> E2[Support: depression trajectory<br/>Stable/Onset/Recovery/Persistent]
-    D --> E3[Support: W1 baseline<br/>Kruskal-Wallis + Welch t]
-    D --> E4[Support: sex-stratified]
-    E1 --> F[Out-of-sample validation<br/>30% held-out, seed=20260619]
-    E1 --> G[Triangulated conclusion:<br/>smartphone = between-person;<br/>sleep & stress = within-person]
+    A[Raw KYHPS W1-W5] --> B[변수명 조화<br/>Harmonize across waves]
+    B --> C[병합 wide + long<br/>complete-case N=3,986]
+    C --> D[변수 구성<br/>GAD-7 0-21, 스트레스 역코딩,<br/>W1 연속to순서형]
+    D --> E1[핵심: Mundlak within-between<br/>+ cluster-robust SE]
+    D --> E2[보조: 우울 궤적<br/>Stable/Onset/Recovery/Persistent]
+    D --> E3[보조: W1 기저 비교<br/>Kruskal-Wallis + Welch t]
+    D --> E4[보조: 성별 분포]
+    E1 --> F[표본외 검증<br/>30% held-out, seed=20260619]
+    E1 --> G[삼각검증 결론:<br/>스마트폰 = 개인 간<br/>수면·스트레스 = 개인 내]
     E2 --> G
     E3 --> G
     E4 --> G
 ```
 
-**Why within–between separation matters (plain language).** Two facts look identical in a one-year snapshot. Fact A: students who use phones more are, on average, more anxious students. Fact B: a given student gets more anxious during the periods they use their phone more. A cross-sectional survey cannot tell these apart — but they imply different policies (screen high-risk students vs. monitor a worsening student). Panel data estimate both in one model: the **between** coefficient captures Fact A, the **within** coefficient captures Fact B.
+**왜 between/within 분리가 중요한가 (쉬운 설명).** 1년 스냅샷에서는 똑같아 보이는 두 사실이 있다. **사실 A**: 폰을 많이 쓰는 학생이 평균적으로 더 불안한 학생이다(개인 간). **사실 B**: 어떤 학생이 폰을 더 많이 쓰는 *시기*에 더 불안해진다(개인 내). 단면조사는 둘을 구분 못 하지만, 함의하는 정책은 다르다(위험군 선별 vs. 악화 추적). Mundlak 모형은 각 변수를 **개인평균(between)**과 **개인 내 편차(within)**로 쪼개 한 모형에 동시 투입함으로써 둘을 분리한다.
 
----
+<details>
+<summary><b>통계 모형 상세 (Statistical Models) — 펼치기</b></summary>
 
-## Statistical Models
+<br>
 
-**1. Mundlak (within–between) decomposition — core.** Each time-varying covariate `x_it` is split into a person mean (between) and a within-person deviation, both entered for GAD-7:
+**① Mundlak 분해 — 핵심 모형.** 각 시간가변 공변량 `x_it`를 개인평균(between)과 개인 내 편차(within)로 분해해 동시 투입:
 
 ```
 GAD7_it = β0 + β_within·(x_it − x̄_i) + β_between·x̄_i + ε_it
 ```
+- 선형 패널모형, **person(pid) cluster-robust SE**, 공변량으로 **성별·조사차수(연도)** 포함.
+- `β_between` = "어떤 청소년이 더 불안한가", `β_within` = "같은 청소년이 어느 시기에 더 불안한가".
+- **표본외 검증:** 30% held-out(seed 20260619)로 between-only vs. within+between의 예측 R² 비교.
 
-Estimated as a linear/OLS panel model with **person (pid) cluster-robust SE**, including **sex and survey wave (year)** as covariates. `β_between` = "which adolescents are more anxious?"; `β_within` = "when is the same adolescent more anxious?" A 30% held-out split (seed 20260619) compares predictive R² of between-only vs. within+between.
+**② 우울 궤적 분류 — 보조.** W1·W5 우울 경험 여부로 4분류:
 
-**2. Depression-trajectory classification — supporting.** W1 and W5 depression status define four groups:
-
-| Group | W1 | W5 |
+| 그룹 | W1 | W5 |
 |---|---|---|
-| Stable | non-dep. | non-dep. |
-| Onset | non-dep. | dep. |
-| Recovery | dep. | non-dep. |
-| Persistent | dep. | dep. |
+| Stable | 비우울 | 비우울 |
+| Onset | 비우울 | 우울 |
+| Recovery | 우울 | 비우울 |
+| Persistent | 우울 | 우울 |
 
-**3. Baseline & change — supporting.** 4-group omnibus: Kruskal–Wallis. Targeted Onset vs. Stable: Welch t. W3→W5 change inspected per group.
+**③ 기저·변화 비교 — 보조.** 4군 omnibus: Kruskal–Wallis / Onset vs. Stable: Welch t / W3→W5 변화 집단별 확인.
+**④ 성별 — 보조.** 성별 × 궤적.
 
-**4. Sex-stratified — supporting.** Sex × trajectory via χ².
+전 분석 **Python 3.11** (pandas, numpy, scipy, statsmodels, linearmodels), 양측 α = 0.05.
 
-All in **Python 3.11** (pandas, numpy, scipy, statsmodels, linearmodels); two-sided α = 0.05.
-
----
-
-## Key Findings
-
-> Reported as **associations within an observational panel**, not causal effects. Within coefficients are **contemporaneous** (same-wave) and do not establish temporal precedence.
-
-1. **Smartphone use is a between-person, not within-person, correlate of anxiety (within the GAD-7 window).** Between β = **+0.113** (p = .002); within β = **+0.023** (p = .454, n.s.).
-2. **Sleep and stress carry the within-person signal.** Both significant between *and* within; largest within coefficients for **stress** (family β = +0.607, friend β = +0.571).
-3. **Within-person information improves out-of-sample prediction.** Held-out test R² **0.125 → 0.206**.
-4. **The reading is window-bound.** Over the longer depression window (W1–W5), the smartphone **within** effect *was* significant → the anxiety within-null is specific to the short 3-wave GAD-7 window, **not** proof of no effect.
-5. **What precedes new-onset depression is sleep and stress, not smartphone use.** Onset vs. Stable at W1: shorter sleep (p = .005), higher academic/future/appearance stress (p < .001), **no** smartphone difference (p = .086, n.s.).
-6. **Recovery is common.** Of **692** adolescents depressed at W1, **476 (68.8%)** were non-depressed by W5; W5 GAD-7 in Recovery returned near Stable. Moderate+ anxiety (GAD-7 ≥ 10) ≈ 24% in Onset/Persistent vs. ≈ 4% in Stable/Recovery.
-7. **Risk concentrates in female students (a between-person distribution).** Female share rose with severity (Stable **43.9%** → Persistent **69.0%**, p < .001); W1-non-depressed→depressed transition higher for females (17.6% vs. 13.1%).
+</details>
 
 ---
 
-## Main Results
+## 주요 결과 (Key Results)
 
-**Table 1. Mean W1 baseline by trajectory (N = 3,986).** Stress reverse-coded († higher = more stress). p = Kruskal–Wallis 4-group omnibus.
+> 모두 **관찰 패널 내 연관(association)**이며 인과가 아니다. within 계수는 **동시측정(same-wave)** 연관으로 시간선후를 보장하지 않는다.
 
-| W1 baseline | Stable | Onset | Recovery | Persistent | p |
+**표1. 우울 궤적별 W1 기저 평균 (N = 3,986).** 스트레스 역코딩(†값↑=스트레스↑). *p* = Kruskal–Wallis 4군 omnibus.
+
+| W1 기저 | Stable | Onset | Recovery | Persistent | p |
 |---|---:|---:|---:|---:|---:|
-| Sleep hours (1–8) | 6.08 | 5.90 | 5.79 | 5.70 | <.001 |
-| Smartphone use (1–9) | 4.15 | 4.31 | 4.62 | 4.61 | <.001 |
-| Academic stress† | 1.96 | 2.13 | 2.56 | 2.46 | <.001 |
-| Future stress† | 1.68 | 1.86 | 2.21 | 2.29 | <.001 |
-| Appearance stress† | 1.54 | 1.68 | 2.09 | 2.23 | <.001 |
+| 수면시간 (1–8) | 6.08 | 5.90 | 5.79 | 5.70 | <.001 |
+| 스마트폰 이용 (1–9) | 4.15 | 4.31 | 4.62 | 4.61 | <.001 |
+| 학업 스트레스† | 1.96 | 2.13 | 2.56 | 2.46 | <.001 |
+| 미래 스트레스† | 1.68 | 1.86 | 2.21 | 2.29 | <.001 |
+| 외모 스트레스† | 1.54 | 1.68 | 2.09 | 2.23 | <.001 |
 
-*Key contrast:* the smartphone omnibus difference is driven by **Recovery/Persistent** (4.62/4.61) — groups already depressed at W1 — i.e., a **between-person** correlate of being depressed, **not** an onset-predictive difference. Onset and Stable did **not** differ on W1 smartphone use (Welch p = .086), whereas Onset already showed shorter sleep and higher academic/future/appearance stress.
+*핵심 해석:* 스마트폰의 omnibus 유의는 **이미 W1에 우울했던 Recovery/Persistent(4.62/4.61)**의 높은 이용에서 비롯 — 즉 우울에 *동반되는* **개인 간(between)** 특성이지 발생을 예고한 차이가 아니다. Onset과 Stable은 W1 스마트폰 이용이 **다르지 않았고**(Welch *p* = .086), Onset은 대신 수면이 짧고 학업·미래·외모 스트레스가 높았다.
 
-**Table 2. Trajectory group sizes.**
+**표2. 궤적 집단 규모.**
 
-| Group | N | % |
+| 그룹 | N | % |
 |---|---:|---:|
 | Stable | 2,795 | 70.1 |
 | Onset | 499 | 12.5 |
 | Recovery | 476 | 11.9 |
 | Persistent | 216 | 5.4 |
 
-**Mundlak coefficients (GAD-7, W3–W5), selected.** Full output: [`results/tables/dep_v2_mundlak_gad7.xlsx`](results/tables/dep_v2_mundlak_gad7.xlsx).
+**Mundlak 계수 (GAD-7, W3–W5), 일부.** 전체: [`results/tables/dep_v2_mundlak_gad7.xlsx`](results/tables/dep_v2_mundlak_gad7.xlsx)
 
-| Covariate | Within β (p) | Between β (p) |
+| 공변량 | Within β (p) | Between β (p) |
 |---|---|---|
-| Smartphone use | +0.023 (.454, n.s.) | +0.113 (.002) |
-| Family stress | +0.607 (sig.) | sig. |
-| Friend stress | +0.571 (sig.) | sig. |
-| Sleep | sig. | sig. |
+| 스마트폰 이용 | +0.023 (.454, n.s.) | +0.113 (.002) |
+| 가족 스트레스 | +0.607 (유의) | 유의 |
+| 친구 스트레스 | +0.571 (유의) | 유의 |
+| 수면 | 유의 | 유의 |
 
-*Held-out (30%) test R²: between-only 0.125 → within+between 0.206 ([`dep_v2_oos.xlsx`](results/tables/dep_v2_oos.xlsx)).*
+*표본외(30% held-out) test R²: between-only **0.125 → 0.206** within+between ([`dep_v2_oos.xlsx`](results/tables/dep_v2_oos.xlsx)).*
+
+**그 외 결과 한 줄 요약**
+- **창(window) 의존성:** 더 긴 우울 결과(W1–W5)에서는 스마트폰 within이 유의 → 불안에서의 within 비유의는 *짧은 GAD-7 구간(W3–W5)*에 한정된 잠정 결론(무효과 증명 아님).
+- **중등도 불안(GAD-7≥10):** Onset/Persistent ≈ 24% vs. Stable/Recovery ≈ 4% (약 6배).
+- **성별:** 여학생 비율 Stable 43.9% → Persistent 69.0% (*p* < .001), 우울 전환율 여 17.6% vs. 남 13.1%.
 
 ---
 
-## Figures
+## 그림 (Figures)
 
-| File | Shows |
+| 파일 | 내용 |
 |---|---|
-| [`figures/Figure1_within_between.png`](figures/Figure1_within_between.png) | (A) per-variable within (●) vs. between (■) Mundlak coefficients w/ 95% CI — smartphone significant **between only**; (B) smartphone within/between ratio across outcomes |
-| [`figures/Figure2_trajectories.png`](figures/Figure2_trajectories.png) | Five-year depression trajectories: wave-by-wave prevalence and W5 GAD-7 (mean + moderate+ share) by group |
-| [`figures/Figure3_change_coupling.png`](figures/Figure3_change_coupling.png) | W3→W5 change trajectories (A GAD-7, B future stress, C family stress, D sleep). Onset: anxiety + future + family stress all rise; Recovery: anxiety and **family** stress fall (future stress rose slightly). **Future stress rose in all four groups** and **sleep fell in all four** (cohort-common trends); **family stress** is the one moving with trajectory direction |
-| `figures/eda/` | selected exploratory figures (gender subgroup, key paradox, onset vs. stable trajectories) |
+| [`Figure1_within_between.png`](figures/Figure1_within_between.png) | (A) 변수별 within(●)·between(■) 계수 + 95% CI — 스마트폰은 **between만 유의** (B) 스마트폰 within/between 비를 불안·우울 결과에서 비교 |
+| [`Figure2_trajectories.png`](figures/Figure2_trajectories.png) | 5개년 우울 궤적 — 차수별 유병률, 집단별 W5 GAD-7 평균·중등도(≥10) 비율 |
+| [`Figure3_change_coupling.png`](figures/Figure3_change_coupling.png) | W3→W5 변화 (A 불안 B 미래 C 가족 스트레스 D 수면). Onset은 불안·미래·가족 모두 상승, Recovery는 불안·**가족**만 하강(미래는 소폭 상승). **미래 스트레스는 4집단 공통 상승·수면은 공통 감소**(코호트 추세), **가족 스트레스만 궤적 방향과 동행** |
+| [`figures/eda/`](figures/eda) | 선별 탐색 그림 (성별 하위그룹, key paradox, onset vs. stable) |
 
 ---
 
-## Robustness Checks
+## 내 기여 (My Contributions)
 
-> The manuscript reports the **out-of-sample validation** and the **outcome-window comparison**. The remaining rows are **repository-level sensitivity analyses** (committed as result tables) that go beyond the 4-page manuscript.
+> 5인 팀 공모전 제출작. 아래는 **면접에서 방어 가능한** 범위로 한정했고, 각 항목은 저장소의 코드·산출물과 연결된다.
 
-| Check | Tests | Takeaway | Output |
-|---|---|---|---|
-| Out-of-sample validation | overfitting | within info improves held-out R² | `dep_v2_oos.xlsx`, `rec_oos_validation.xlsx` |
-| Outcome-window comparison | is the smartphone within-null window-specific? | yes — significant in longer depression window | `dep_v2_mundlak_dep_5wave.xlsx`, `dep_v2_mundlak_dep_w35.xlsx` |
-| Measurement robustness | W1 continuous→ordinal binning sensitivity | conclusions inspected vs. harmonization choice | `rec_measurement_quality.xlsx`, `rec_rtm_audit.xlsx` |
-| Missing-data handling | CCA vs. LOCF vs. MICE | sensitivity beyond complete-case | `robustness_mice_vs_cca.xlsx` |
-| Model comparison | FE / RE / Hausman / logit AME | estimator sensitivity | `robustness_*.xlsx`, `panel_*_coefficients.xlsx` |
-| Triangulation | does one conclusion reproduce across designs? | baseline, decomposition, change analysis all agree | — |
+**역할:** 제1저자 · 발표자 · 단독 데이터 분석 담당.
 
----
-
-## My Contributions
-
-> Five-author competition submission. Statements are scoped to be **interview-defensible** — each claim maps to code/output in this repo.
-
-**Role:** Role: First Author and Lead Data Analyst (Team Submission)
-
-| Area | Claimable on README/CV | Explainable in interview |
+| 영역 | README/CV에 쓸 수 있는 표현 | 면접에서 설명 가능한 내용 |
 |---|---|---|
-| Study design | reframed a cross-sectional question into a within–between panel question | why between vs. within is a *different* question; why panel data are required |
-| Data engineering | built the W1–W5 harmonize → merge → tracking → clean pipeline (`src/01`–`05`) | the W1-continuous vs. W2+-ordinal scale problem and the fix; CCA vs. LOCF/MICE trade-offs |
-| Modeling | implemented Mundlak decomposition with person-clustered robust SE (`scripts/depression_panel_v2.py`) | what the within/between split does and why clustered SE for repeated measures |
-| Validation | added out-of-sample testing and the outcome-window robustness comparison | why I treat the smartphone within-null as window-bound, not "no effect" |
-| Communication | produced final figures and wrote the manuscript | the triangulation argument and the limitations |
+| 연구 설계 | 단면 질문을 within–between 패널 질문으로 재정의 | between vs. within이 왜 *다른* 질문인지, 왜 패널이 필요한지 |
+| 데이터 엔지니어링 | W1–W5 조화→병합→추적→정제 파이프라인 구축 (`src/01`–`05`) | W1 연속 vs. W2+ 순서형 척도 문제와 해결, CCA/LOCF/MICE 트레이드오프 |
+| 모델링 | Mundlak 분해 + person cluster-robust SE 직접 구현 (`scripts/depression_panel_v2.py`) | within/between 분해의 의미, 반복측정에서 군집강건 SE가 필요한 이유 |
+| 검증 | 표본외 검증·결과창 강건성 비교 추가 | 스마트폰 within 비유의를 왜 "창 의존적"으로 해석하는지 |
+| 전달 | 최종 Figure·원고 작성 | 삼각검증 논리와 한계 |
 
-**Honest scope boundaries:** no result is called causal; within coefficients are contemporaneous associations; I describe my role as lead analyst of a team submission, not sole author of every component; the smartphone within-null is not presented as proven absence of effect.
-
----
-
-## Limitations
-
-1. **Selection / attrition** — only five-wave complete responders (N = 3,986); if dropouts were more vulnerable, associations may be conservative.
-2. **Short anxiety window** — GAD-7 only at W3–W5 narrows the within-person span.
-3. **Self-report depression** — trajectory grouping dichotomizes a single self-report item, not a clinical diagnosis (though it tracks GAD-7).
-4. **Contemporaneous within estimates** — same-wave associations; do not establish that ΔX precedes ΔY, and shared age/period trends (sleep declines in all groups) may contaminate the within sleep–anxiety link.
-5. **Single cohort; no survey weights in the core model** — design-based inference and broad generalization are not claimed.
-6. **Scale harmonization** — W1 smartphone/sleep binned from continuous, limiting clean W1→W2 change interpretation.
+**정직한 경계:** 어떤 결과도 인과로 표현하지 않음 · within 계수는 동시측정 연관 · 팀 제출작의 *분석 리드*이지 모든 구성요소의 단독 저자가 아님 · 스마트폰 within 비유의를 "효과 없음의 증명"으로 제시하지 않음.
 
 ---
 
-## Future Work
+## 📂 강건성 · 한계 · 재현 (Robustness · Limitations · Reproducibility)
 
-Lagged / cross-lagged (RI-CLPM) models for temporal ordering · longitudinal mediation of stress between sleep and anxiety · attrition modeling (IPW/FIML) to relax complete-case · survey-design–based inference with KYHPS weights/strata/clusters · sex-stratified Mundlak models.
+<details>
+<summary><b>강건성 검정 (Robustness Checks)</b></summary>
 
----
+<br>
 
-## Repository Structure
+> 원고에는 **표본외 검증**과 **결과창 비교**를 수록. 나머지는 4쪽 원고를 넘어선 **저장소 수준 민감도분석**(결과표로 커밋).
 
-```
-KYHPS_GitHub/
-├── README.md
-├── LICENSE                     # MIT 라이선스(코드) / 원자료 비공개
-├── requirements.txt
-├── .gitignore
-├── manuscript/
-│   └── kyphs-anxiety-dynamics.pdf   # 공모전 제출 원고
-├── figures/
-│   ├── Figure1_within_between.png
-│   ├── Figure2_trajectories.png
-│   ├── Figure3_change_coupling.png
-│   └── eda/                    # 탐색적 분석 그림
-├── scripts/                    # 분석 및 그림 생성 코드 (one ≈ one result)
-│   ├── depression_panel_v2.py  # Mundlak 개인 간·개인 내 효과 분해 (핵심 분석)
-│   ├── dep_v2_robustness.py
-│   ├── recovery_redesign.py
-│   ├── onset_analysis.py
-│   ├── panel_ols.py
-│   ├── robustness_check.py
-│   ├── figure3_final.py / figure3_change_coupling.py
-│   ├── eda_pipeline.py
-│   └── utils.py
-├── results/
-│   └── tables/                 # 분석 결과 (dep_v2_*, rec_*, robustness_*, panel_*, ...)
-├── src/                        # 분석 파이프라인 (00_config–08_visualization)
-├── notebooks/                  # 탐색적 분석 노트북 (EXP002–004)
-├── docs/
-│   ├── codebook/               # codelist_*.csv, variable_map_*.yaml
-│   ├── methods/                # 연구 노트, 가설 및 해석 기록
-│   └── reproduce.md            # 재현 가이드
-└── data/
-    └── README.md               # 🔒 제한자료(미포함)
-```
+| 검정 | 무엇을 보는가 | 결과 | 산출물 |
+|---|---|---|---|
+| 표본외 검증 | 과적합 | within 정보가 held-out R² 향상 | `dep_v2_oos.xlsx`, `rec_oos_validation.xlsx` |
+| 결과창 비교 | within 비유의가 창 특이적인가 | 긴 우울 창에서는 유의 | `dep_v2_mundlak_dep_5wave.xlsx`, `dep_v2_mundlak_dep_w35.xlsx` |
+| 측정 강건성 | W1 연속→순서형 매핑 민감도 | 조화 선택에 대해 점검 | `rec_measurement_quality.xlsx`, `rec_rtm_audit.xlsx` |
+| 결측 처리 | CCA vs. LOCF vs. MICE | complete-case를 넘어선 민감도 | `robustness_mice_vs_cca.xlsx` |
+| 모형 비교 | FE / RE / Hausman / logit AME | 추정량 민감도 | `robustness_*.xlsx`, `panel_*_coefficients.xlsx` |
 
----
+</details>
 
-## Reproducibility
+<details>
+<summary><b>한계 (Limitations)</b></summary>
 
+<br>
+
+1. **선택/탈락** — 5차 완전응답자(N=3,986)만 분석. 탈락자가 더 취약했다면 연관은 보수적으로 추정됐을 수 있음.
+2. **짧은 불안 창** — GAD-7이 W3–W5뿐이라 within 시간폭이 좁음.
+3. **자기보고 우울** — 궤적은 단일문항 이분화(임상진단 아님, 단 GAD-7과 일관).
+4. **동시측정 within** — same-wave 연관으로 ΔX가 ΔY에 선행함을 보이지 못함. 수면이 전 집단 공통 감소라 within 수면–불안에 연령·시기 효과가 섞일 수 있음.
+5. **단일 코호트, 핵심모형 가중치 미적용** — 설계기반 추론·광범위 일반화는 주장 안 함.
+6. **척도 조화** — W1 스마트폰·수면을 연속→순서형 매핑 → W1→W2 변화 해석 제약.
+
+</details>
+
+<details>
+<summary><b>향후 과제 (Future Work) · 재현 (Reproducibility)</b></summary>
+
+<br>
+
+**향후:** lagged/cross-lagged(RI-CLPM)로 시간선후 보강 · 수면–불안 사이 스트레스의 종단 매개 · 탈락 모델링(IPW/FIML) · KYHPS 가중치·층화·군집 기반 설계추론 · 성별 층화 Mundlak.
+
+**재현:**
 ```bash
 python -m venv .venv && source .venv/bin/activate   # Python 3.11
 pip install -r requirements.txt
-
-# Place restricted KYHPS files under data/raw/ (not distributed here), then:
-python scripts/depression_panel_v2.py    # core Mundlak model -> results/tables/dep_v2_*.xlsx
+# data/raw/ 에 제한자료를 직접 배치한 뒤:
+python scripts/depression_panel_v2.py   # 핵심 Mundlak → results/tables/dep_v2_*.xlsx
 python scripts/onset_analysis.py
 python scripts/recovery_redesign.py
 python scripts/figure3_final.py
 ```
+모든 train/test split seed = **20260619**. 전체 단계: [`docs/reproduce.md`](docs/reproduce.md).
 
-All train/test splits use seed **20260619**. Full step-by-step DAG: [`docs/reproduce.md`](docs/reproduce.md).
+</details>
 
 ---
 
-## References
+## 저장소 구조 (Repository Structure)
+
+```
+KYHPS_GitHub/
+├── README.md
+├── LICENSE                     # 코드 MIT / 데이터 재배포 불가
+├── requirements.txt
+├── manuscript/                 # 최종 공모전 원고 (PDF)
+├── figures/                    # Figure1–3 (+ eda/)
+├── scripts/                    # 분석·그림 스크립트 (depression_panel_v2.py = 핵심)
+├── results/tables/             # 모형 산출표 (dep_v2_*, rec_*, robustness_* ...)
+├── src/                        # 번호순 재현 파이프라인 (00_config–08_visualization)
+├── notebooks/                  # 탐색 EDA (EXP002–004)
+├── docs/                       # codebook · methods · reproduce.md
+└── data/                       # 🔒 README만 — 제한자료 미포함
+```
+
+---
+
+## 참고문헌 (References)
 
 1. Mundlak Y. On the pooling of time series and cross section data. *Econometrica.* 1978;46(1):69–85.
 2. Orben A, Przybylski AK. The association between adolescent well-being and digital technology use. *Nat Hum Behav.* 2019;3(2):173–182.
@@ -297,4 +284,4 @@ All train/test splits use seed **20260619**. Full step-by-step DAG: [`docs/repro
 
 ---
 
-*Korean Youth Health Panel Survey (KYHPS), 1st KYHPS Data Analysis Competition. Code released under MIT; raw data restricted and not redistributed. Contact: jiwooo411@gachon.ac.kr*
+<sub>Korean Youth Health Panel Survey (KYHPS) · 제1회 KYHPS 데이터 분석 공모전 · 코드 MIT, 원자료 제한·미배포 · 문의: jiwooo411@gachon.ac.kr</sub>
