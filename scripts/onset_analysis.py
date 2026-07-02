@@ -478,7 +478,7 @@ if __name__ == "__main__":
         5. 가설 후보 콘솔 출력
 
     VS Code 터미널 실행:
-        cd "C:/Users/jiwoo/OneDrive/Desktop/나/3학년/제1회 청소년건강패널조사"
+        cd /path/to/kyhps-anxiety-dynamics
         python scripts/onset_analysis.py
 
     eda_pipeline.py 이후 실행 권장 (데이터 파일 의존).

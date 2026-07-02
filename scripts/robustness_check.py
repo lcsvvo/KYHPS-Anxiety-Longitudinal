@@ -40,7 +40,7 @@
 #   fig16_model_comparison_forest.png
 #
 # 실행:
-#   cd "C:/Users/jiwoo/OneDrive/Desktop/나/3학년/제1회 청소년건강패널조사"
+#   cd /path/to/kyhps-anxiety-dynamics
 #   pip install linearmodels
 #   python scripts/robustness_check.py
 """

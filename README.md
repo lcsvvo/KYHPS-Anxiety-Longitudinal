@@ -12,11 +12,11 @@
   <sub><b>Figure 1.</b> GAD-7 불안의 개인 간(between ■)·개인 내(within ●) 분해. 스마트폰은 <b>between만 유의</b>, 수면·스트레스는 양쪽 유의.</sub>
 </p>
 
-> 🔒 **데이터 미포함.** KYHPS 원자료·가공자료는 승인 기반 제한자료로 **재배포가 금지**되어 이 저장소에는 포함하지 않습니다. 코드·문서·그림·결과표만 공개합니다. → [`data/README.md`](data/README.md)
+> **데이터 미포함.** KYHPS 원자료·가공자료는 승인 기반 제한자료로 **재배포가 금지**되어 이 저장소에는 포함하지 않습니다. 코드·문서·그림·결과표만 공개합니다. → [`data/README.md`](data/README.md)
 
 ---
 
-## 요약 (TL;DR)
+## 30초 요약
 
 **질문 (Research Question).** 청소년에서 흔히 보고되는 "스마트폰–불안" 연관은
 *누가 더 불안한가(**between-person**)* 의 문제인가, *같은 학생이 더 많이 쓰는 시기에 더 불안해지는가(**within-person**)* 의 문제인가?
@@ -31,7 +31,7 @@
 
 **방법 (Method).** KYHPS 2019–2023 (W1–W5) · **Mundlak within–between decomposition** + person cluster-robust SE · 30% held-out 표본외 검증 · Python 3.11.
 
-<sub>📖 목차: [질문](#연구-질문-research-question) · [데이터·변수](#데이터--변수-dataset--variables) · [방법론](#방법론-methodology) · [결과](#주요-결과-key-results) · [그림](#그림-figures) · [내 기여](#내-기여-my-contributions) · [강건성·한계·재현](#-강건성-robustness-checks) · [구조](#저장소-구조-repository-structure)</sub>
+<sub>목차: [질문](#연구-질문-research-question) · [데이터·변수](#데이터--변수-dataset--variables) · [방법론](#방법론-methodology) · [결과](#주요-결과-key-results) · [그림](#그림-figures) · [내 기여](#내-기여-my-contributions) · [강건성·한계·재현](#-강건성-robustness-checks) · [구조](#저장소-구조-repository-structure)</sub>
 
 ---
 
@@ -71,7 +71,21 @@
 | **스트레스** (5영역) | 역코딩(값↑=스트레스↑) | W1–W5 | 학업·미래·친구·외모·가족 |
 | 성별 · 조사차수(연도) | — | W1–W5 | Mundlak 모형 공변량 (성별은 층화에도 사용) |
 
-> ⚠️ **측정 주의(전체에 적용):** 스마트폰·수면 척도가 W1(연속)과 W2+(순서형)에서 달라 W1을 구간매핑했다. GAD-7은 **W3–W5 세 시점뿐**이며, 이는 within(개인 내) 불안 결과의 해석 범위를 의도적으로 제한한다.
+> **측정 주의(전체에 적용):** 스마트폰·수면 척도가 W1(연속)과 W2+(순서형)에서 달라 W1을 구간매핑했다. GAD-7은 **W3–W5 세 시점뿐**이며, 이는 within(개인 내) 불안 결과의 해석 범위를 의도적으로 제한한다.
+
+---
+
+## 기술 스택 (Tech Stack)
+
+| 구분 | 도구 |
+|---|---|
+| 언어 | Python 3.11 |
+| 데이터 처리 | pandas · numpy |
+| 통계·검정 | scipy (Kruskal–Wallis · Welch t · χ²) |
+| 패널·회귀 | statsmodels · linearmodels (OLS/FE/RE · Hausman · Mundlak LPM) |
+| 시각화 | matplotlib |
+
+> 전체 의존성: [`requirements.txt`](requirements.txt).
 
 ---
 
@@ -105,7 +119,7 @@ flowchart TD
 ```
 GAD7_it = β0 + β_within·(x_it − x̄_i) + β_between·x̄_i + ε_it
 ```
-- 선형 패널모형, **person(pid) cluster-robust SE**, 공변량으로 **성별·조사차수(연도)** 포함.
+- **추정량:** 선형확률/OLS 패널모형(LPM). 각 시간가변 공변량을 개인평균·개인 내 편차로 분해해 동시 투입하고, **person(pid) 군집강건 SE를 numpy로 직접 구현**했다 — 구현체는 [`scripts/depression_panel_v2.py`](scripts/depression_panel_v2.py)의 `mundlak()`. 공변량으로 **성별·조사차수(연도)** 포함.
 - `β_between` = "어떤 청소년이 더 불안한가", `β_within` = "같은 청소년이 어느 시기에 더 불안한가".
 - **표본외 검증:** 30% held-out(seed 20260619)로 between-only vs. within+between의 예측 R² 비교.
 
@@ -119,11 +133,27 @@ GAD7_it = β0 + β_within·(x_it − x̄_i) + β_between·x̄_i + ε_it
 | Persistent | 우울 | 우울 |
 
 **③ 기저·변화 비교 — 보조.** 4군 omnibus: Kruskal–Wallis / Onset vs. Stable: Welch t / W3→W5 변화 집단별 확인.
-**④ 성별 — 보조.** 성별 × 궤적.
+**④ 성별 — 보조.** 성별 × 궤적 (χ²).
 
-전 분석 **Python 3.11** (pandas, numpy, scipy, statsmodels, linearmodels), 양측 α = 0.05.
+**⑤ 강건성 모형 — 보조.** FE / RE / Hausman / logit AME / CCA·LOCF·MICE 비교는 [`scripts/panel_ols.py`](scripts/panel_ols.py)·[`scripts/robustness_check.py`](scripts/robustness_check.py)에서 statsmodels·linearmodels로 추정 → `results/tables/robustness_*.xlsx`.
+
+전 분석 **Python 3.11** (pandas, numpy, scipy, statsmodels, linearmodels), 양측 α = 0.05. 스크립트별 산출표 매핑: [`scripts/README.md`](scripts/README.md).
 
 </details>
+
+---
+
+## 설계 의사결정 (Design Decisions)
+
+> 핵심은 수치가 아니라 "왜 그렇게 결정했는가". 각 결정은 저장소의 코드·산출물로 추적된다.
+
+| 결정 | 이유 |
+|---|---|
+| 추정량으로 **선형확률/OLS Mundlak** 채택 | within/between 계수를 같은 척도로 직접 비교·해석하기 위해. 우울(0/1) 결과도 로짓 대신 LPM으로 통일해 within/between 스케일 일치 |
+| **person 군집강건 SE를 직접 구현** | 반복측정(같은 개인 3회)의 오차 상관 보정 — `scripts/depression_panel_v2.py`의 `mundlak()` |
+| **complete-case(N=3,986) 주분석 + CCA/LOCF/MICE 민감도** | 탈락 편향을 무시하지 않되 주분석은 단순·투명하게. 대안 처리와의 민감도는 `robustness_mice_vs_cca.xlsx`로 커밋 |
+| 핵심 모형은 `scripts/`, `src/`는 intake·전처리 | 재현 파이프라인과 분석 실행을 분리 (→ [`src/README.md`](src/README.md) · [`scripts/README.md`](scripts/README.md)) |
+| 스마트폰 within 비유의를 **"창 의존적"으로 해석** (무효과 증명 아님) | 더 긴 우울 창(W1–W5)에서는 within이 유의 → 짧은 GAD-7 창(W3–W5)에 한정된 잠정 결론 |
 
 ---
 
@@ -199,6 +229,12 @@ GAD7_it = β0 + β_within·(x_it − x̄_i) + β_between·x̄_i + ε_it
 
 ---
 
+## Key Takeaway
+
+같은 1년 스냅샷에서 똑같아 보이는 "스마트폰–불안"이, 같은 청소년을 5년 추적하자 **개인 간(누가 더 불안한가)** 신호였지 **개인 내(같은 학생이 더 불안해지는가)** 신호는 아니었다(짧은 GAD-7 창 기준). 개인 내 변화를 끌고 간 것은 **수면·스트레스**였고, W1 우울자의 **68.8%가 회복**했다. 핵심은 청소년 정신건강에서 위험군 *선별*(between)과 악화 *추적*(within)이 **서로 다른 문제**이며, 단면조사로는 이 둘을 가를 수 없다는 점이다.
+
+---
+
 ## 강건성 · 한계 · 재현 (Robustness · Limitations · Reproducibility)
 
 <details>
@@ -258,18 +294,18 @@ python scripts/figure3_final.py
 ## 저장소 구조 (Repository Structure)
 
 ```
-KYHPS_GitHub/
+kyhps-anxiety-dynamics/
 ├── README.md
 ├── LICENSE                     # 코드 MIT / 데이터 재배포 불가
 ├── requirements.txt
 ├── manuscript/                 # 최종 공모전 원고 (PDF)
 ├── figures/                    # Figure1–3 (+ eda/)
-├── scripts/                    # 분석·그림 스크립트 (depression_panel_v2.py = 핵심)
+├── scripts/                    # 분석·그림 스크립트 (depression_panel_v2.py = 핵심) → scripts/README.md
 ├── results/tables/             # 모형 산출표 (dep_v2_*, rec_*, robustness_* ...)
-├── src/                        # 번호순 재현 파이프라인 (00_config–08_visualization)
+├── src/                        # 번호순 재현 파이프라인 (00_config–08_visualization) → src/README.md
 ├── notebooks/                  # 탐색 EDA (EXP002–004)
 ├── docs/                       # codebook · methods · reproduce.md
-└── data/                       # 🔒 README만 — 제한자료 미포함
+└── data/                       # README만 — 제한자료 미포함
 ```
 
 ---

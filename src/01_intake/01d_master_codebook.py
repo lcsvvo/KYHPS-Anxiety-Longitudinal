@@ -15,9 +15,8 @@ from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
 
-_LINUX_BASE = "/sessions/friendly-funny-cori/mnt/제1회 청소년건강패널조사"
-_WIN_BASE = r"C:\Users\jiwoo\OneDrive\Desktop\나\3학년\제1회 청소년건강패널조사"
-BASE = _LINUX_BASE if os.path.isdir(_LINUX_BASE) else _WIN_BASE
+from pathlib import Path
+BASE = Path(__file__).resolve().parents[2]   # repo root
 OUT = os.path.join(BASE, "output_cleaning")
 
 # 데이터 로드

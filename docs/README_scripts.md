@@ -40,7 +40,7 @@
 
 ```powershell
 # PowerShell / VS Code 터미널
-cd "C:\Users\jiwoo\OneDrive\Desktop\나\3학년\제1회 청소년건강패널조사"
+cd \path\to\kyhps-anxiety-dynamics
 
 python -m venv .venv
 .venv\Scripts\activate

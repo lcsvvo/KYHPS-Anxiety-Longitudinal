@@ -16,7 +16,9 @@ warnings.filterwarnings('ignore')
 # ─────────────────────────────────────────────
 # 0. 데이터 로딩
 # ─────────────────────────────────────────────
-DATA_PATH = r"C:\Users\jiwoo\OneDrive\Desktop\나\3학년\제1회 청소년건강패널조사\2019-23_student_merged_wide_format.csv"
+from pathlib import Path
+REPO_ROOT = Path(__file__).resolve().parents[2]   # repo root
+DATA_PATH = REPO_ROOT / "2019-23_student_merged_wide_format.csv"
 
 df = pd.read_csv(DATA_PATH, low_memory=False, encoding='cp949')
 print("=" * 65)
@@ -213,8 +215,8 @@ print("\n" + "=" * 65)
 print("[ 6. 보호자 데이터 구조 확인 ]")
 print("=" * 65)
 
-PARENT_DATA_DIR = r"C:\Users\jiwoo\OneDrive\Desktop\나\3학년\제1회 청소년건강패널조사\data\보호자_20260506_46302_데이터"
-PARENT_WIDE_PATH = r"C:\Users\jiwoo\OneDrive\Desktop\나\3학년\제1회 청소년건강패널조사\output_cleaning\fin_parent_wide_5y.csv"
+PARENT_DATA_DIR = REPO_ROOT / "data" / "보호자_20260506_46302_데이터"
+PARENT_WIDE_PATH = REPO_ROOT / "output_cleaning" / "fin_parent_wide_5y.csv"
 
 import os
 

@@ -20,13 +20,15 @@ The numbered pipeline turns raw wave files into the analytic tables.
 |---|---|---|
 | 00 | `src/00_config/` | variable maps (`variable_map_student.yaml`), design metadata |
 | 01 | `src/01_intake/` | load raw wave files, extract value labels, build master codebook |
-| 02–03 | `src/02_harmonize/`, `src/03_merge/` | align names across W1–W5, merge to wide + long complete-case panel |
+| 02–03 | `src/02_harmonize/`, `src/03_merge/` | align names across W1–W5, merge to wide + long complete-case panel — **`__init__.py` only in this repo** (see note) |
 | 04 | `src/04_tracking/` | response / attrition tracking labels |
 | 05 | `src/05_cleaning/` | logic checks, GAD-7 standardization (0–21), stress reverse-coding |
 | 06 | `src/06_survey_design/` | weight / strata / cluster setup |
 | 07–08 | `src/07_analysis/`, `src/08_visualization/` | descriptive, FE model, selection-bias test, summary export |
 
 > Note: `src/00_config/variable_map_student.yaml` maps analysis variables to raw column names; confirm it matches your copy of the data before running.
+>
+> Note on stages 02–03: variable harmonization and wave merging were performed in the exploratory cleaning notebooks during analysis; standalone pipeline modules for these two steps are **not** included in this public repository (the folders hold `__init__.py` only). The panel-build step therefore cannot be reproduced from raw files using this repository alone — see [`src/README.md`](../src/README.md). The missing-data preprocessing (CCA/LOCF/MICE) lives in [`notebooks/EXP004_preprocessing.ipynb`](../notebooks/EXP004_preprocessing.ipynb).
 
 ## 2. Core model — Mundlak within–between
 

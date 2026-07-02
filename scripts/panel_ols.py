@@ -608,7 +608,7 @@ if __name__ == "__main__":
         7. 모형 비교 콘솔 출력
 
     VS Code 터미널 실행:
-        cd "C:/Users/jiwoo/OneDrive/Desktop/나/3학년/제1회 청소년건강패널조사"
+        cd /path/to/kyhps-anxiety-dynamics
         python scripts/panel_ols.py
 
     Fixed Effects 실행 시 사전 설치:

@@ -649,7 +649,7 @@ if __name__ == "__main__":
         9. 우울 궤적 집단 → fig11 + depression_group_dist.xlsx
 
     VS Code 터미널 실행:
-        cd "C:/Users/jiwoo/OneDrive/Desktop/나/3학년/제1회 청소년건강패널조사"
+        cd /path/to/kyhps-anxiety-dynamics
         python scripts/eda_pipeline.py
     """
     LOGGER.info("━━━ EDA Pipeline 시작 ━━━")
