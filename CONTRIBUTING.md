@@ -9,7 +9,7 @@
 
 ## 브랜치 네이밍
 
-`<type>/<short-topic>` 형식 (예: `feat/mundlak-oos`, `docs/readme-structure`).
+`<type>/<short-topic>` 형식 (예: `feature/mundlak-oos`, `docs/readme-structure`).
 AI 에이전트도 `claude/*`·`codex/*` 같은 임의 브랜치를 만들지 않고 위 규칙을 따른다.
 
 ## 커밋 메시지
