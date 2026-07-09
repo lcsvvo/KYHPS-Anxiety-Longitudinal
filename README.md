@@ -16,20 +16,20 @@
 
 ---
 
-## 30초 요약
+## 요약
 
-**질문 (Research Question).** 청소년에서 흔히 보고되는 "스마트폰–불안" 연관은
+**질문.** 청소년에서 흔히 보고되는 "스마트폰–불안" 연관은
 *누가 더 불안한가(**between-person**)* 의 문제인가, *같은 학생이 더 많이 쓰는 시기에 더 불안해지는가(**within-person**)* 의 문제인가?
 단면조사로는 구분되지 않는 이 둘을, 같은 청소년 **3,986명**을 5년간 추적한 패널자료로 분리했다.
 
-**핵심 발견 (Key Findings).**
+**핵심 발견.**
 - **스마트폰**은 anxiety의 **개인 간(between) 연관에만 유의** (β = +0.113, *p* = .002) — 개인 내(within)는 유의하지 않음 (β = +0.023, *p* = .454).
 -  **수면·스트레스**가 개인 내(within) 변화 신호를 담당 (within이 가장 큰 영역: 가족 스트레스 β = +0.607).
 -  W1 우울자 692명 중 **476명(68.8%)이 회복** — 회복은 예외가 아니라 주요 경로.
 
-**내 역할 (My Role).** 5인 팀의 **제1저자·발표자**. 데이터 파이프라인 구축, Mundlak 모형(개인 군집강건 SE) 직접 구현, 표본외 검증, Figure·원고 작성을 **단독 담당**.
+**내 역할.** 5인 팀의 **제1저자·발표자**. 데이터 파이프라인 구축, Mundlak 모형(개인 군집강건 SE) 직접 구현, 표본외 검증, Figure·원고 작성을 **단독 담당**.
 
-**방법 (Method).** KYHPS 2019–2023 (W1–W5) · **Mundlak within–between decomposition** + person cluster-robust SE · 30% held-out 표본외 검증 · Python 3.11.
+**방법.** KYHPS 2019–2023 (W1–W5) · **Mundlak within–between decomposition** + person cluster-robust SE · 30% held-out 표본외 검증 · Python 3.11.
 
 <sub>목차: [질문](#연구-질문-research-question) · [데이터·변수](#데이터--변수-dataset--variables) · [방법론](#방법론-methodology) · [결과](#주요-결과-key-results) · [그림](#그림-figures) · [내 기여](#내-기여-my-contributions) · [강건성·한계·재현](#-강건성-robustness-checks) · [구조](#저장소-구조-repository-structure)</sub>
 
@@ -51,7 +51,7 @@
 
 ---
 
-## 데이터 & 변수 (Dataset & Variables)
+## 데이터 & 변수
 
 | 항목 | 내용 |
 |---|---|
@@ -75,7 +75,7 @@
 
 ---
 
-## 기술 스택 (Tech Stack)
+## 기술 스택
 
 | 구분 | 도구 |
 |---|---|
@@ -89,7 +89,7 @@
 
 ---
 
-## 방법론 (Methodology)
+## 방법론
 
 ```mermaid
 flowchart TD
@@ -107,7 +107,7 @@ flowchart TD
     E4 --> G
 ```
 
-**왜 between/within 분리가 중요한가 (쉬운 설명).** 1년 스냅샷에서는 똑같아 보이는 두 사실이 있다. **사실 A**: 폰을 많이 쓰는 학생이 평균적으로 더 불안한 학생이다(개인 간). **사실 B**: 어떤 학생이 폰을 더 많이 쓰는 *시기*에 더 불안해진다(개인 내). 단면조사는 둘을 구분 못 하지만, 함의하는 정책은 다르다(위험군 선별 vs. 악화 추적). Mundlak 모형은 각 변수를 **개인평균(between)**과 **개인 내 편차(within)**로 쪼개 한 모형에 동시 투입함으로써 둘을 분리한다.
+**왜 between/within 분리가 중요한가.** 1년 스냅샷에서는 똑같아 보이는 두 사실이 있다. **사실 A**: 폰을 많이 쓰는 학생이 평균적으로 더 불안한 학생이다(개인 간). **사실 B**: 어떤 학생이 폰을 더 많이 쓰는 *시기*에 더 불안해진다(개인 내). 단면조사는 둘을 구분 못 하지만, 함의하는 정책은 다르다(위험군 선별 vs. 악화 추적). Mundlak 모형은 각 변수를 **개인평균(between)**과 **개인 내 편차(within)**로 쪼개 한 모형에 동시 투입함으로써 둘을 분리한다.
 
 <details>
 <summary><b>통계 모형 상세 (Statistical Models) — 펼치기</b></summary>
@@ -143,7 +143,7 @@ GAD7_it = β0 + β_within·(x_it − x̄_i) + β_between·x̄_i + ε_it
 
 ---
 
-## 설계 의사결정 (Design Decisions)
+## 설계 의사결정
 
 > 핵심은 수치가 아니라 "왜 그렇게 결정했는가". 각 결정은 저장소의 코드·산출물로 추적된다.
 
@@ -157,7 +157,7 @@ GAD7_it = β0 + β_within·(x_it − x̄_i) + β_between·x̄_i + ε_it
 
 ---
 
-## 주요 결과 (Key Results)
+## 주요 결과
 
 > 모두 **관찰 패널 내 연관(association)**이며 인과가 아니다. within 계수는 **동시측정(same-wave)** 연관으로 시간선후를 보장하지 않는다.
 
@@ -200,7 +200,7 @@ GAD7_it = β0 + β_within·(x_it − x̄_i) + β_between·x̄_i + ε_it
 
 ---
 
-## 그림 (Figures)
+## 그림
 
 | 파일 | 내용 |
 |---|---|
@@ -211,13 +211,13 @@ GAD7_it = β0 + β_within·(x_it − x̄_i) + β_between·x̄_i + ε_it
 
 ---
 
-## 내 기여 (My Contributions)
+## 내 기여
 
-> 5인 팀 공모전 제출작. 아래는 **면접에서 방어 가능한** 범위로 한정했고, 각 항목은 저장소의 코드·산출물과 연결된다.
+> 5인 팀 공모전 제출작. 각 항목은 저장소의 코드·산출물과 연결된다.
 
 **역할:** 제1저자 · 발표자 · 단독 데이터 분석 담당.
 
-| 영역 | README/CV에 쓸 수 있는 표현 | 면접에서 설명 가능한 내용 |
+| 영역 | README/CV에 쓸 수 있는 표현 | 설명 가능한 내용 |
 |---|---|---|
 | 연구 설계 | 단면 질문을 within–between 패널 질문으로 재정의 | between vs. within이 왜 *다른* 질문인지, 왜 패널이 필요한지 |
 | 데이터 엔지니어링 | W1–W5 조화→병합→추적→정제 파이프라인 구축 (`src/01`–`05`) | W1 연속 vs. W2+ 순서형 척도 문제와 해결, CCA/LOCF/MICE 트레이드오프 |
@@ -235,10 +235,10 @@ GAD7_it = β0 + β_within·(x_it − x̄_i) + β_between·x̄_i + ε_it
 
 ---
 
-## 강건성 · 한계 · 재현 (Robustness · Limitations · Reproducibility)
+## 강건성 · 한계 · 재현
 
 <details>
-<summary><b>강건성 검정 (Robustness Checks)</b></summary>
+<summary><b>강건성 검정</b></summary>
 
 <br>
 
@@ -291,7 +291,7 @@ python scripts/figure3_final.py
 
 ---
 
-## 저장소 구조 (Repository Structure)
+## 저장소 구조
 
 ```
 kyhps-anxiety-dynamics/
@@ -310,7 +310,7 @@ kyhps-anxiety-dynamics/
 
 ---
 
-## 참고문헌 (References)
+## 참고문헌
 
 1. Mundlak Y. On the pooling of time series and cross section data. *Econometrica.* 1978;46(1):69–85.
 2. Orben A, Przybylski AK. The association between adolescent well-being and digital technology use. *Nat Hum Behav.* 2019;3(2):173–182.
