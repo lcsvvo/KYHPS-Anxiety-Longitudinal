@@ -320,4 +320,4 @@ kyhps-anxiety-dynamics/
 
 ---
 
-<sub>Korean Youth Health Panel Survey (KYHPS) · 제1회 KYHPS 데이터 분석 공모전 · 코드 MIT, 원자료 제한·미배포 · 문의: jiwooo411@gachon.ac.kr</sub>
+<sub>Korean Youth Health Panel Survey (KYHPS) · 제1회 KYHPS 데이터 분석 공모전 · 코드 MIT, 원자료 제한·미배포 · 문의: lcsvvo@gmail.com</sub>
