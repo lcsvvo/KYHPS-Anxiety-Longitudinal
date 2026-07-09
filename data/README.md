@@ -1,24 +1,26 @@
-# Data — Not Included (Restricted Access)
+# Data — 미포함 (제한 접근)
 
-The **Korean Youth Health Panel Survey (KYHPS)** microdata used in this project are **restricted-access** and are governed by the data provider's terms of use. They are **not redistributed** in this repository — neither the raw files nor any person-level processed/derived files.
+본 프로젝트에서 사용한 **한국청소년건강패널조사(KYHPS)** 원자료는 **제한 접근(Restricted Access)** 자료이며, 데이터 제공기관의 이용 규정을 따른다. 따라서 이 저장소에는 **원자료뿐 아니라 개인 단위의 전처리·가공 데이터도 포함하지 않는다.**
 
-## What this folder would contain locally
+## 로컬 환경에서의 데이터 구조
 
-```
+```text
 data/
-├── raw/         # original KYHPS student & parent files, W1–W5 (2019–2023)   🔒 not included
-└── processed/   # harmonized / merged / cleaned analytic tables               🔒 not included
-                 #   (e.g., complete-case panel, CCA / LOCF / MICE versions)
+├── raw/         # KYHPS 학생·학부모 원자료 (2019–2023, W1–W5)          🔒 미포함
+└── processed/   # 통합·정제된 분석 데이터셋                           🔒 미포함
+                 # (예: Complete Case, CCA / LOCF / MICE 버전)
 ```
 
-## How to obtain the data
+## 데이터 이용 방법
 
-KYHPS microdata are provided to approved researchers through the official data-distribution channel of the survey's administering institution. Access typically requires an application and agreement to the data-use terms. Once obtained, place the raw files under `data/raw/` following the directory layout expected by `src/01_intake/`.
+KYHPS 원자료는 조사 수행기관의 공식 데이터 제공 절차를 통해 승인된 연구자에게만 제공된다. 이용을 위해서는 일반적으로 자료 이용 신청 및 이용 규정 동의가 필요하다.
 
-## Why it is excluded
+원자료를 확보한 경우, `src/01_intake/`에서 사용하는 디렉터리 구조에 맞추어 `data/raw/`에 배치하면 된다.
 
-- The data are **not licensed for public redistribution**.
-- The files contain **individual-level adolescent health records**.
-- Publishing them would violate the data-use agreement.
+## 저장소에 포함하지 않은 이유
 
-This repository is fully **auditable without the data**: the complete processing and analysis pipeline (`src/`, `scripts/`) and all result tables (`results/tables/`) are included, so the methodology can be reviewed end-to-end. Only the inputs are withheld.
+* 원자료는 공개 재배포가 허용되지 않는다.
+* 개인 단위 청소년 건강 정보를 포함하고 있다.
+* 원자료 또는 가공 데이터를 공개하는 것은 데이터 이용 규정을 위반할 수 있다.
+
+본 저장소는 **데이터 없이도 분석 과정을 검토할 수 있도록 구성**되어 있다. 전처리 및 분석 파이프라인(`src/`, `scripts/`)과 결과 산출물(`results/tables/`)을 포함하여 연구 방법론을 처음부터 끝까지 확인할 수 있으며, 제한된 입력 데이터만 제외하였다.
