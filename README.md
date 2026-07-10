@@ -16,15 +16,15 @@
 
 ---
 
-## 30초 요약
+## 요약
 
 **질문.** 청소년에서 흔히 보고되는 "스마트폰–불안" 연관은
-누가 더 불안한가(**between-person**)의 문제인가, 같은 학생이 더 많이 쓰는 시기에 더 불안해지는가(**within-person**)의 문제인가?
+*누가 더 불안한가(**between-person**)* 의 문제인가, *같은 학생이 더 많이 쓰는 시기에 더 불안해지는가(**within-person**)* 의 문제인가?
 단면조사로는 구분되지 않는 이 둘을, 같은 청소년 **3,986명**을 5년간 추적한 패널자료로 분리했다.
 
 **핵심 발견.**
-- **스마트폰**은 anxiety의 **개인 간 연관에만 유의** (β = +0.113, p = .002) — 개인 내는 유의하지 않음 (β = +0.023, p = .454).
--  **수면·스트레스**가 개인 내 변화 신호를 담당 (within이 가장 큰 영역: 가족 스트레스 β = +0.607).
+- **스마트폰**은 anxiety의 **개인 간(between) 연관에만 유의** (β = +0.113, *p* = .002) — 개인 내(within)는 유의하지 않음 (β = +0.023, *p* = .454).
+-  **수면·스트레스**가 개인 내(within) 변화 신호를 담당 (within이 가장 큰 영역: 가족 스트레스 β = +0.607).
 -  W1 우울자 692명 중 **476명(68.8%)이 회복** — 회복은 예외가 아니라 주요 경로.
 
 **내 역할.** 5인 팀의 **제1저자·발표자**. 데이터 파이프라인 구축, Mundlak 모형(개인 군집강건 SE) 직접 구현, 표본외 검증, Figure·원고 작성을 **단독 담당**.
@@ -51,7 +51,7 @@
 
 ---
 
-## 데이터와 변수
+## 데이터 & 변수
 
 | 항목 | 내용 |
 |---|---|
@@ -107,7 +107,7 @@ flowchart TD
     E4 --> G
 ```
 
-**왜 between/within 분리가 중요한가.** 1년 스냅샷에서는 똑같아 보이는 두 사실이 있다. **사실 A**: 폰을 많이 쓰는 학생이 평균적으로 더 불안한 학생이다(개인 간). **사실 B**: 어떤 학생이 폰을 더 많이 쓰는 시기에 더 불안해진다(개인 내). 단면조사는 둘을 구분 못 하지만, 함의하는 정책은 다르다(위험군 선별 vs. 악화 추적). Mundlak 모형은 각 변수를 **개인평균(between)**과 **개인 내 편차(within)**로 쪼개 한 모형에 동시 투입함으로써 둘을 분리한다.
+**왜 between/within 분리가 중요한가.** 1년 스냅샷에서는 똑같아 보이는 두 사실이 있다. **사실 A**: 폰을 많이 쓰는 학생이 평균적으로 더 불안한 학생이다(개인 간). **사실 B**: 어떤 학생이 폰을 더 많이 쓰는 *시기*에 더 불안해진다(개인 내). 단면조사는 둘을 구분 못 하지만, 함의하는 정책은 다르다(위험군 선별 vs. 악화 추적). Mundlak 모형은 각 변수를 **개인평균(between)**과 **개인 내 편차(within)**로 쪼개 한 모형에 동시 투입함으로써 둘을 분리한다.
 
 <details>
 <summary><b>통계 모형 상세 — 펼치기</b></summary>
@@ -202,16 +202,6 @@ GAD7_it = β0 + β_within·(x_it − x̄_i) + β_between·x̄_i + ε_it
 
 ## 그림
 
-<p align="center">
-  <img src="figures/fig2_depression_trajectories.png" width="720" alt="5개년 우울 궤적과 불안 결과"><br>
-  <sub><b>Figure 2.</b> 5개년 우울 궤적과 불안 결과. A는 차수별 우울 경험 비율, B는 W5 GAD-7 평균과 중등도(≥10) 비율. Onset·Persistent가 Stable의 약 3배, 중등도 비율은 약 24% 대 약 4%.</sub>
-</p>
-
-<p align="center">
-  <img src="figures/fig3_change_trajectories.png" width="720" alt="우울 궤적 집단별 W3~W5 변화 궤적"><br>
-  <sub><b>Figure 3.</b> 우울 궤적 집단별 W3~W5 변화 궤적. A GAD-7 불안, B 미래 스트레스, C 가족 스트레스(역코딩, 값↑=스트레스↑), D 평일 수면. Onset은 불안·미래·가족 모두 상승, Recovery는 불안·가족 하강. 미래는 전 집단 상승, 수면은 전 집단 감소. 가족 스트레스만 궤적 방향과 동행.</sub>
-</p>
-
 | 파일 | 내용 |
 |---|---|
 | [`fig1_within_between.png`](figures/fig1_within_between.png) | GAD-7 불안 요인의 개인 간·개인 내 효과 분해(Mundlak 모형). A는 변수별 개인 내·개인 간 계수와 95% CI — 스마트폰은 **개인 간만 유의**. B는 개인 간 효과를 1로 둔 개인 내 효과의 상대 크기를 불안·우울 결과에서 비교 |
@@ -223,11 +213,11 @@ GAD7_it = β0 + β_within·(x_it − x̄_i) + β_between·x̄_i + ε_it
 
 ## 내 기여
 
-> 5인 팀 공모전 제출작. 아래는 **면접에서 방어 가능한** 범위로 한정했고, 각 항목은 저장소의 코드·산출물과 연결된다.
+> 5인 팀 공모전 제출작. 각 항목은 저장소의 코드·산출물과 연결된다.
 
 **역할:** 제1저자 · 발표자 · 단독 데이터 분석 담당.
 
-| 영역 | README/CV에 쓸 수 있는 표현 | 면접에서 설명 가능한 내용 |
+| 영역 | README/CV에 쓸 수 있는 표현 | 설명 가능한 내용 |
 |---|---|---|
 | 연구 설계 | 단면 질문을 within–between 패널 질문으로 재정의 | between vs. within이 왜 다른 질문인지, 왜 패널이 필요한지 |
 | 데이터 엔지니어링 | W1–W5 조화→병합→추적→정제 파이프라인 구축 (`src/01`–`05`) | W1 연속 vs. W2+ 순서형 척도 문제와 해결, CCA/LOCF/MICE 트레이드오프 |
@@ -245,7 +235,7 @@ GAD7_it = β0 + β_within·(x_it − x̄_i) + β_between·x̄_i + ε_it
 
 ---
 
-## 강건성·한계·재현
+## 강건성 · 한계 · 재현
 
 <details>
 <summary><b>강건성 검정</b></summary>
@@ -321,6 +311,14 @@ kyhps-anxiety-dynamics/
 ---
 
 ## 참고문헌
+
+1. Mundlak Y. On the pooling of time series and cross section data. *Econometrica.* 1978;46(1):69–85.
+2. Orben A, Przybylski AK. The association between adolescent well-being and digital technology use. *Nat Hum Behav.* 2019;3(2):173–182.
+3. Spitzer RL, Kroenke K, Williams JBW, Löwe B. A brief measure for assessing generalized anxiety disorder: the GAD-7. *Arch Intern Med.* 2006;166(10):1092–1097.
+4. 조수경, 이소연. 청소년의 수면시간 변화궤적과 관련 요인. *한국청소년연구.* 2020;31(1):5–32.
+5. 유창민. 한국 청소년의 수면시간 변화 유형 분류 및 예측요인 확인: 잠재계층성장분석을 적용한 7개년도 종단연구. *보건사회연구.* 2019;39(1):230–258.
+
+---
 
 1. Mundlak Y. On the pooling of time series and cross section data. Econometrica. 1978;46(1):69–85.
 2. Orben A, Przybylski AK. The association between adolescent well-being and digital technology use. Nat Hum 
