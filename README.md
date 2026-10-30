@@ -54,13 +54,13 @@
 
 ```mermaid
 flowchart LR
-    A["W1–W5 자료 통합"] --> B["척도 조화<br/>완전응답 패널"]
-    B --> C["개인평균<br/>개인 내 편차<br/>Mundlak 회귀"]
-    B --> D["우울 집단 분류<br/>기저, 변화 비교"]
-    B --> R["우울 보조 회귀<br/>OLS, FE, RE<br/>로짓"]
-    C --> E["표본외 평가<br/>관측 구간 비교"]
-    D --> F["결과 종합"]
-    R --> F
+    A["KYHPS 자료"] -->|W1–W5| B["척도 조화<br/>패널 구성"]
+    B -->|주분석| C["Mundlak 회귀<br/>개인평균, 편차"]
+    B -->|보조 회귀| R["OLS, FE, RE<br/>로짓"]
+    B -->|집단 비교| D["우울 집단 분류<br/>기저, 변화 비교"]
+    C -->|30% Holdout| E["표본외 평가<br/>관측 구간 비교"]
+    R --> F["결과 종합"]
+    D --> F
     E --> F
     classDef step fill:#ede9fe,stroke:#8b5cf6,color:#111827;
     class B,C,D,E,R step;
