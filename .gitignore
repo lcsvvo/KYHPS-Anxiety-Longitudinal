@@ -24,3 +24,8 @@ Thumbs.db
 # ---- Logs / scratch ----
 logs/
 *.log
+
+# Local generated outputs and restricted respondent lists
+outputs/
+**/정제요약보고_KYHPS_5y.xlsx
+
