@@ -1,16 +1,18 @@
-# `results/` — 모형 산출표
+# Results
 
-`scripts/`가 생성하는 결과표(xlsx/csv). 기계 생성물이므로 수기 편집하지 않고 스크립트 재실행으로 재생성한다. 스크립트→표 매핑: [`scripts/README.md`](../scripts/README.md), 결과 수치→파일 대응: [`docs/reproduce.md`](../docs/reproduce.md) §5.
+**공개 집계표와 모형 결과** 안내. 원자료와 개인별 ID 목록은 공개 제외.
 
-## `tables/` 파일군
+| File or Group | Content |
+|---|---|
+| [dep_v2_mundlak_gad7.xlsx](tables/dep_v2_mundlak_gad7.xlsx) | GAD-7 개인 간, 개인 내 계수 |
+| [dep_v2_oos.xlsx](tables/dep_v2_oos.xlsx) | 표본외 성능 비교 |
+| [dep_v2_trajectory_gad.xlsx](tables/dep_v2_trajectory_gad.xlsx) | 우울 집단별 불안 수준 |
+| [depression_group_dist.xlsx](tables/depression_group_dist.xlsx) | 우울 집단 규모 |
+| [onset_vs_stable_comparison.xlsx](tables/onset_vs_stable_comparison.xlsx) | 신규 발생과 비우울 유지 집단 비교 |
+| `dep_v2_mundlak_dep_*.xlsx` | 우울 관측 구간별 결과 |
+| `rec_*`, `panel_*`, `robustness_*` | 회복, 보조 모형, 민감도 결과 |
+| [figure3_change_means.csv](tables/figure3_change_means.csv) | Figure 3 집단별 평균 |
 
-| 접두어 | 무엇 | 생성 스크립트 |
-|---|---|---|
-| `dep_v2_*` | **핵심 Mundlak** — GAD-7/우울 within·between, 표본외(OOS), 창 비교, 스마트폰 해리 | `depression_panel_v2.py` |
-| `rec_*` | 회복(Recovery) 재설계 — 정의·측정품질·within-between·OOS·RTM 감사 | `recovery_redesign.py` |
-| `onset_*`, `depression_group_*`, `dual_worse_*` | Onset vs. Stable 기저·추세, 궤적 집단 분포, 이중악화 비교 | `onset_analysis.py` |
-| `panel_*` | 패널 OLS·FE·상호작용 계수 | `panel_ols.py` |
-| `robustness_*` | FE/RE/Hausman/logit AME/MICE-vs-CCA/모형비교 | `robustness_check.py` |
-| `mean_trend_by_year`, `missing_summary`, `change_score_summary`, `covid_impact_summary`, `subgroup_gender_means` | 탐색적 EDA 요약 | `eda_pipeline.py` |
-| `figure3_change_means.csv` | Figure 3의 집단별 변화 평균 | `figure3_final.py` |
-| `정제요약보고_KYHPS_5y.xlsx` | 정제 단계 요약 보고 | 전처리 단계 |
+- 결과는 **관찰자료의 연관**이며 인과효과가 아님
+- 표본, 척도, 관측 구간은 각 표와 [본문](../README.md)의 조건 참조
+- 실행 스크립트는 [Scripts](../scripts/README.md) 참조
